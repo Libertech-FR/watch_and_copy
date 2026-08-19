@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: copy sources
+        run: |
+          mkdir -p .debpkg/etc/watch_and_copy
+          cp config.json.exemple .debpkg/etc
+          mkdir -p .debpkg/usr/bin
+          cp watch_and_copy.py .debpkg/usr/bin
+          chmod 700 .debpkg/usr/bin/watch_and_copy.py
+          cp README.* .debpkg/etc/watch_and_copy
+          mkdir -p .debpkg/lib/systemd/system/
+          cp watch_and_copy.service .debpkg/lib/systemd/system
+          mkdir -p .debpkg/DEBIAN
+          cp DEBIAN/postinst .debpkg/DEBIAN
+          chmod 755 .debpkg/DEBIAN/postinst
+      - uses: jiro4989/build-deb-action@v3
+        with:
+           package: watch-and-copy
+           package_root: .debpkg
+           maintainer: Libertech
+           version: ${{ github.ref }} # refs/tags/v*.*.*
+           arch: 'amd64'
+           depends: 'python3'
+           desc: 'watch and copy'
+           homepage: 'https://github.com/Libertech-FR/watch_and_copy'
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: watch-and-copy*
+          overwrite: true
+          file_glob: true

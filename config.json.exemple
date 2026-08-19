@@ -1,0 +1,4 @@
+{
+    "source_dir": "/home/source",
+    "dest_dir": "/mnt/destination"
+}

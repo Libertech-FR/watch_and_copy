@@ -1,0 +1,14 @@
+[Unit]
+Description=Watch and copy new files from source_dir to dest_dir
+After=network.target
+
+[Service]
+Type=forking
+User=root
+PIDFile=/tmp/watch_and_copy.pid
+ExecStart=/usr/bin/watch_and_copy.py start
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
