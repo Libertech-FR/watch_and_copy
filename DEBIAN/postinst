@@ -13,6 +13,7 @@ if command -v systemctl >/dev/null 2>&1; then
     else
        if [ -f /etc/watch_and_copy/config.json ]; then
           systemctl start "$SERVICE"
+       fi
     fi
 fi
 
